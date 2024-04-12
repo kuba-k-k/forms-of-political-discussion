@@ -22,188 +22,270 @@
       <div id="chart" class="w100"></div>
     </div>
 
+    <div id="infoMenu">
+      <header>
+        <h2 id="menu-title">Information</h2>
+        <span class="close">&times;</span>
+      </header>
+      <p id="menu-description">Key Information</p>
+      <ul id="menu-bullets"></ul>
+      <div id="video-placeholder"></div>
+    </div>
+
     <script type="text/javascript">
-      // data
-      const data = [
-        {name: "Debata", formality: 60, accessibility: 70, participation: 40, type: 'parent', radius: 100, children: [
-          {name: "W stylu oksfordzkim", radius: 20},
-          {name: "Przekrojowa", radius: 20},
-          {name: "Otwarta", radius: 30}
-        ]},
-        {name: "Panel dyskusyjny", formality: 60, accessibility: 60, participation: 50, type: 'single', radius: 80},
-        {name: "Town hall", formality: 50, accessibility: 80, participation: 80, type: 'single', radius: 90},
-        {name: "Protest publiczny", formality: 20, accessibility: 100, participation: 100, type: 'single', radius: 90},
-        {name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, type: 'single', radius: 80},
-        {name: "Wywiad", formality: 80, accessibility: 10, participation: 10, type: 'single', radius: 100},
-      ];
+      $(document).ready(function() {
+        // data
+        const data = [
+          {name: "Debata", formality: 60, accessibility: 70, participation: 40, type: 'parent', radius: 100, children: [
+            {name: "W stylu oksfordzkim", radius: 20},
+            {name: "Przekrojowa", radius: 20},
+            {name: "Otwarta", radius: 30}
+          ]},
+          {name: "Panel dyskusyjny", formality: 60, accessibility: 60, participation: 50, type: 'single', radius: 80},
+          {name: "Town hall", formality: 50, accessibility: 80, participation: 80, type: 'single', radius: 90},
+          {name: "Protest publiczny", formality: 20, accessibility: 100, participation: 100, type: 'single', radius: 90},
+          {name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, type: 'single', radius: 80},
+          {
+            name: "Wywiad",
+            formality: 80,
+            accessibility: 10,
+            participation: 10,
+            type: 'single',
+            radius: 100,
+            description: "Wywiad polityczny to rodzaj rozmowy, która ma na celu uzyskanie informacji, opinii lub komentarzy od polityków lub innych osób związanych z życiem politycznym na temat określonych kwestii politycznych, społecznych lub gospodarczych. Jest to istotne narzędzie dziennikarskie, które pozwala na przybliżenie opinii publicznej stanowisk polityków oraz na lepsze zrozumienie działań podejmowanych w życiu politycznym.",
+            bullets: [
+              {bullet: "Tematyka", text: "Wywiady polityczne mogą dotyczyć różnorodnych tematów związanych z życiem politycznym, takich jak aktualne wydarzenia, projekty ustaw, decyzje rządowe, sprawy międzynarodowe, polityka społeczna, gospodarcza czy kwestie dotyczące bezpieczeństwa narodowego."},
+              {bullet: "Uczestnicy", text: "Uczestnikami wywiadów politycznych mogą być politycy na różnych szczeblach, od lokalnych działaczy po przywódców państw. Mogą to być także eksperci, analitycy polityczni, liderzy opinii publicznej lub przedstawiciele innych grup zainteresowanych określonymi tematami."},
+              {bullet: "Forma", text: "Wywiady polityczne mogą mieć różne formy, od krótkich wywiadów udzielanych przez polityków w trakcie konferencji prasowych, po długie i szczegółowe rozmowy przeprowadzane przez dziennikarzy w studiu telewizyjnym czy radiowym. Mogą być też udzielane na łamach gazet, portalach internetowych lub w formie podcastów."},
+              {bullet: "Cel", text: "Celem wywiadów politycznych jest uzyskanie rzetelnej informacji, wyjaśnienie stanowiska rozmówcy, zadanie kluczowych pytań, konfrontacja go z faktycznymi danymi czy sprzecznością w jego wypowiedziach oraz przekazanie tej wiedzy odbiorcom."},
+              {bullet: "Kontekst", text: "Ważne jest również umieszczenie wywiadu w kontekście aktualnych wydarzeń politycznych i społecznych, aby odbiorcy mogli lepiej zrozumieć, dlaczego dana kwestia jest ważna i jakie są jej konsekwencje."},
+            ],
+            youtubes: ["https://www.youtube.com/watch?v=rmgtOX1Gkfs", "https://www.youtube.com/watch?v=QmGBaEWk_9k"],
+          },
+        ];
 
-      // svg setup
-      const width = $("#chart").width();
-      const height = 600;
-      const margin = 40;
-      const svg = d3.select('#chart').append('svg')
-        .attr('width', width)
-        .attr('height', height);
+        // svg setup
+        const width = $("#chart").width();
+        const height = 600;
+        const margin = 40;
+        const svg = d3.select('#chart').append('svg')
+          .attr('width', width)
+          .attr('height', height);
 
-      // axes
-      const borderLines = [
-        {x1: margin, y1: margin, x2: width - margin, y2: margin},
-        {x1: width - margin, y1: margin, x2: width - margin, y2: height - margin},
-        {x1: margin, y1: height - margin, x2: width - margin, y2: height - margin},
-        {x1: margin, y1: margin, x2: margin, y2: height - margin}
-      ];
+        // axes
+        const borderLines = [
+          {x1: margin, y1: margin, x2: width - margin, y2: margin},
+          {x1: width - margin, y1: margin, x2: width - margin, y2: height - margin},
+          {x1: margin, y1: height - margin, x2: width - margin, y2: height - margin},
+          {x1: margin, y1: margin, x2: margin, y2: height - margin}
+        ];
 
-      borderLines.forEach(line => {
-        svg.append('line')
-          .attr('x1', line.x1)
-          .attr('y1', line.y1)
-          .attr('x2', line.x2)
-          .attr('y2', line.y2)
-          .style('stroke', 'grey')
-          .style('stroke-width', 0.5);
-      });
-
-      svg.append('text')
-        .attr('x', width / 2)
-        .attr('y', height - margin + 20)
-        .attr('text-anchor', 'middle')
-        .text('Stopień formalności')
-        .style('font-size', '16px');
-      svg.append('text')
-        .attr('x', 40)
-        .attr('y', height - margin + 20)
-        .attr('text-anchor', 'start')
-        .text('Niski')
-        .style('font-size', '12px');
-      svg.append('text')
-        .attr('x', width - margin)
-        .attr('y', height - margin + 20)
-        .attr('text-anchor', 'end')
-        .text('Wysoki')
-        .style('font-size', '12px');
-
-      svg.append('text')
-        .attr('transform', `translate(30, ${height / 2}) rotate(-90)`)
-        .attr('text-anchor', 'middle')
-        .text('Dostępność publiczna')
-        .style('font-size', '16px');
-
-      svg.append('text')
-        .attr('transform', `translate(30, ${height - margin}) rotate(-90)`)
-        .attr('text-anchor', 'start')
-        .text('Niska')
-        .style('font-size', '12px');
-
-      svg.append('text')
-        .attr('transform', `translate(30, ${margin}) rotate(-90)`)
-        .attr('text-anchor', 'end')
-        .text('Wysoka')
-        .style('font-size', '12px');
-
-
-      // scales
-      const xScale = d3.scaleLinear()
-        .domain([0, 110])
-        .range([50, width - 50]);
-      const yScale = d3.scaleLinear()
-        .domain([-50, 150])
-        .range([height - 50, 50]);
-
-      const uniqueNames = Array.from(new Set(data.map(d => d.name).concat(data.flatMap(d => d.children ? d.children.map(child => child.name) : []))));
-      const nameToIndex = new Map(uniqueNames.map((name, index) => [name, index / (uniqueNames.length - 1)]));
-      const color = d3.scaleSequential(d3.interpolateWarm) // Example with a cool color interpolator
-        .domain([0, 1]);
-
-
-
-      const simulation = d3.forceSimulation(data)
-        .force('x', d3.forceX(d => xScale(d.formality)).strength(0.2))
-        .force('y', d3.forceY(d => yScale(d.participation)).strength(0.2))
-        .force('collide', d3.forceCollide(d => d.radius + 2))
-        .on('tick', ticked);
-
-      function ticked() {
-        const u = svg.selectAll('.node')
-          .data(data, d => d.name)
-          .join('g')
-            .attr('class', 'node')
-            .attr('transform', d => `translate(${d.x}, ${d.y})`);
-
-        // Single nodes
-        u.filter(d => d.type === 'single').append('circle')
-          .attr('r', d => d.radius)
-          .attr('fill', d => color(nameToIndex.get(d.name)))
-          .attr('stroke', 'black')
-          .attr('stroke-width', 1);
-
-        // Add labels for single nodes
-        u.filter(d => d.type === 'single').append('text')
-          .attr('text-anchor', 'middle')
-          .attr('dy', "0.35em") // Vertically center text within the circle
-          .text(d => d.name)
-          .style('fill', '#333');
-
-        // Packed nodes
-        const packedGroups = u.filter(d => d.type === 'parent');
-        packedGroups.each(function(d) {
-          const node = d3.select(this);
-          const packedData = pack(d);
-          node.selectAll('circle.packed')
-            .data(packedData.leaves())
-            .join('circle')
-              .attr('class', 'packed')
-              .attr('r', d => d.r)
-              .attr('cx', d => d.x - packedData.r) // Offset to center
-              .attr('cy', d => d.y - packedData.r) // Offset to center
-              .attr('fill', d => color(nameToIndex.get(d.data.name)))
-              .attr('stroke', 'black')
-              .attr('stroke-width', 1);
-
-          // Add labels for packed circles
-          node.selectAll('text.packed')
-            .data(packedData.leaves())
-            .join('text')
-              .attr('class', 'packed')
-              .attr('x', d => d.x - packedData.r) // Center text over packed circle
-              .attr('y', d => d.y - packedData.r) // Center text vertically
-              .attr('text-anchor', 'middle')
-              .attr('dy', "0.35em") // Vertically center text
-              .text(d => d.data.name) // Use the name from the data bound to each leaf
-              .style('fill', '#333')
-              .style('font-size', '10px');  // Smaller font size for packed circles
-
-          node.append('circle')
-            .attr('r', d.radius)
-            .attr('stroke', 'black')
-            .attr('stroke-dasharray', '5,5')
-            .attr('fill', 'none');
-
-          // Label for the parent node above the dashed line
-          node.append('text')
-            .attr('y', -d.radius - 10) // Position above the dashed line
-            .attr('text-anchor', 'middle')
-            .text(d => d.name)
-            .style('fill', '#333');
+        borderLines.forEach(line => {
+          svg.append('line')
+            .attr('x1', line.x1)
+            .attr('y1', line.y1)
+            .attr('x2', line.x2)
+            .attr('y2', line.y2)
+            .style('stroke', 'grey')
+            .style('stroke-width', 0.5);
         });
 
-        // Titles might still be useful for tooltips; adjust if needed
-        u.selectAll('title')
-          .data(d => [d])
-          .join('title')
-            .text(d => d.name);
-      }
+        svg.append('text')
+          .attr('x', width / 2)
+          .attr('y', height - margin + 20)
+          .attr('text-anchor', 'middle')
+          .text('Stopień formalności')
+          .style('font-size', '16px');
+        svg.append('text')
+          .attr('x', 40)
+          .attr('y', height - margin + 20)
+          .attr('text-anchor', 'start')
+          .text('Niski')
+          .style('font-size', '12px');
+        svg.append('text')
+          .attr('x', width - margin)
+          .attr('y', height - margin + 20)
+          .attr('text-anchor', 'end')
+          .text('Wysoki')
+          .style('font-size', '12px');
+
+        svg.append('text')
+          .attr('transform', `translate(30, ${height / 2}) rotate(-90)`)
+          .attr('text-anchor', 'middle')
+          .text('Dostępność publiczna')
+          .style('font-size', '16px');
+
+        svg.append('text')
+          .attr('transform', `translate(30, ${height - margin}) rotate(-90)`)
+          .attr('text-anchor', 'start')
+          .text('Niska')
+          .style('font-size', '12px');
+
+        svg.append('text')
+          .attr('transform', `translate(30, ${margin}) rotate(-90)`)
+          .attr('text-anchor', 'end')
+          .text('Wysoka')
+          .style('font-size', '12px');
+
+
+        // scales
+        const xScale = d3.scaleLinear()
+          .domain([0, 110])
+          .range([50, width - 50]);
+        const yScale = d3.scaleLinear()
+          .domain([-50, 150])
+          .range([height - 50, 50]);
+
+        const uniqueNames = Array.from(new Set(data.map(d => d.name).concat(data.flatMap(d => d.children ? d.children.map(child => child.name) : []))));
+        const nameToIndex = new Map(uniqueNames.map((name, index) => [name, index / (uniqueNames.length - 1)]));
+        const color = d3.scaleSequential(d3.interpolateWarm) // Example with a cool color interpolator
+          .domain([0, 1]);
+
+        // simulation
+        const simulation = d3.forceSimulation(data)
+          .force('x', d3.forceX(d => xScale(d.formality)).strength(0.2))
+          .force('y', d3.forceY(d => yScale(d.participation)).strength(0.2))
+          .force('collide', d3.forceCollide(d => d.radius + 2))
+          .on('tick', ticked);
+
+        // ticked
+        function ticked() {
+            const u = svg.selectAll('.node')
+                .data(data, d => d.name);
+
+            const entered = u.enter().append('g')
+                .attr('class', 'node');
+
+            entered.filter(d => d.type === 'single').append('circle')
+                .attr('class', 'bubble')
+                .attr('r', d => d.radius)
+                .attr('fill', d => color(nameToIndex.get(d.name)))
+                .attr('stroke', 'grey')
+                .attr('stroke-width', 1);
+
+            entered.filter(d => d.type === 'parent').append('circle')
+                .attr('class', 'bubble')
+                .attr('r', d => d.radius)
+                .attr('fill', 'none')
+                .attr('stroke', 'grey')
+                .attr('stroke-dasharray', '5,5')
+                .attr('stroke-width', 1);
+
+            entered.filter(d => d.type === 'single').append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', "0.35em")
+                .text(d => d.name)
+                .style('fill', '#333');
+
+            entered.filter(d => d.type === 'parent').append('text')
+                .attr('y', d => -d.radius - 10)
+                .attr('text-anchor', 'middle')
+                .attr('dy', "0.35em")
+                .text(d => d.name)
+                .style('fill', '#333');
+
+            u.merge(entered)
+                .attr('transform', d => `translate(${d.x}, ${d.y})`);
+
+            // packed nodes
+            entered.filter(d => d.type === 'parent').each(function(d) {
+                const node = d3.select(this);
+                const packedData = pack(d);
+
+                const packedCircles = node.selectAll('.packed')
+                    .data(packedData.leaves())
+                    .enter()
+                    .append('circle')
+                    .classed('packed', true)
+                    .attr('r', d => d.r)
+                    .attr('fill', d => color(nameToIndex.get(d.data.name)))
+                    .attr('stroke', 'grey')
+                    .attr('stroke-width', 0.5);
+
+                const packedLabels = node.selectAll('text.packed')
+                  .data(packedData.leaves())
+                  .enter()
+                  .append('text')
+                    .attr('class', 'packed')
+                    .attr('x', d => d.x - packedData.r)
+                    .attr('y', d => d.y - packedData.r)
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', "0.35em")
+                    .text(d => d.data.name)
+                    .style('fill', '#333')
+                    .style('font-size', '10px');
+
+                node.selectAll('.packed')
+                    .attr('cx', d => d.x - packedData.r)
+                    .attr('cy', d => d.y - packedData.r);
+            });
+        }
+
+        function pack(parentData) {
+          const hierarchy = d3.hierarchy({children: parentData.children}).sum(d => d.radius);
+          return d3.pack()
+          .size([parentData.radius * 2, parentData.radius * 2])
+            .padding(2)(hierarchy);
+        }
+
+        // start simulation
+        simulation.alpha(1).restart();
+
+
+        $('#chart').on('click', '.bubble', function() {
+            // Assuming the data is bound to each bubble, like d3 does
+            var data = d3.select(this).data()[0];
+
+            // Update the title and description in the menu
+            $('#menu-title').text(data.name);
+            $('#menu-description').text(data.description);
+
+            // Update the bullets list
+            $('#menu-bullets').empty(); // Clear existing bullets
+            data.bullets.forEach(function(bullet) {
+                $('#menu-bullets').append($('<li>').text(bullet.bullet + ": " + bullet.text));
+            });
+
+            // Handle the YouTube videos
+            $('#video-placeholder').empty(); // Clear existing videos
+            data.youtubes.forEach(function(url) {
+                var videoId = url.split('v=')[1];
+                var embedUrl = "https://www.youtube.com/embed/" + videoId;
+                var iframe = $('<iframe>').attr({
+                    src: embedUrl,
+                    width: "100%",
+                    height: "315",
+                    frameborder: "0",
+                    allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                    allowfullscreen: true
+                });
+                $('#video-placeholder').append(iframe);
+            });
+
+            // Now open the menu
+            $('#infoMenu').css('right', '0');
+        });
+
+        /*
+        // Close the menu
+        $('#infoMenu .close').on('click', function() {
+            $('#infoMenu').css('right', '-50%');
+        });
+
+
+        $('#chart').on('click', '.node', function() {
+            $('#infoMenu').css('right', '0');
+        });
+        */
+
+        $('#infoMenu .close').on('click', function() {
+            $('#infoMenu').css('right', '-50%');
+        });
 
 
 
-      function pack(parentData) {
-        const hierarchy = d3.hierarchy({children: parentData.children}).sum(d => d.radius);
-        return d3.pack()
-        .size([parentData.radius * 2, parentData.radius * 2])
-          .padding(2)(hierarchy);
-      }
-
-       simulation.alpha(1).restart();
-     </script>
+      });
+    </script>
 
 
 
