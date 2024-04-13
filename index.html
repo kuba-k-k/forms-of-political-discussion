@@ -18,17 +18,37 @@
   </head>
 
   <body>
-    <div class="w100">
-      <div id="chart" class="w100"></div>
+    <div class="w100 container-fluid" id="container">
+      <div class="row pt-3 pb-5" style="margin-left: 28px;">
+        <div class="col">
+          <h1>Formy dyskursu politycznego w mediach</h1>
+        </div>
+      </div>
+      <div class="row" style="margin-left: 28px;">
+        <div class="col-auto">
+          <select id="axesValues" class="form-select small" aria-label="Oś y">
+            <option value="participation_x_accessibility" selected>Partycypacja publiczności / Dostępność publiczna</option>
+            <option value="moderator_x_formality">Rola moderatora / Stopień formalności</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" id="filler">
+        <div class="col w100" id="chart">
+        </div>
+      </div>
     </div>
 
     <div id="infoMenu">
-      <header>
-        <h2 id="menu-title">Information</h2>
+      <header class="mb-0">
+        <div class="pb-3">
+            <span class="h2" id="menu-title"></span>
+            <span class="h4" id="menu-icons"></span>
+        </div>
         <span class="close">&times;</span>
       </header>
       <p id="menu-description">Key Information</p>
-      <ul id="menu-bullets"></ul>
+      <div id="menu-bullets"></div>
+      <div id="menu-description-rows"></div>
       <div id="video-placeholder"></div>
     </div>
 
@@ -36,22 +56,20 @@
       $(document).ready(function() {
         // data
         const data = [
-          {name: "Debata", formality: 60, accessibility: 70, participation: 40, type: 'parent', radius: 100, children: [
-            {name: "W stylu oksfordzkim", radius: 20},
-            {name: "Przekrojowa", radius: 20},
-            {name: "Otwarta", radius: 30}
-          ]},
-          {name: "Panel dyskusyjny", formality: 60, accessibility: 60, participation: 50, type: 'single', radius: 80},
-          {name: "Town hall", formality: 50, accessibility: 80, participation: 80, type: 'single', radius: 90},
-          {name: "Protest publiczny", formality: 20, accessibility: 100, participation: 100, type: 'single', radius: 90},
-          {name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, type: 'single', radius: 80},
-          {
+          {id: "debate", name: "Debata", formality: 100, accessibility: 30, participation: 40, moderator: 100, radius: 97, type: "single"},
+          {id: "panel", name: "Panel dyskusyjny", formality: 60, accessibility: 50, participation: 50, moderator: 50, radius: 87, type: "single"},
+          {id: "town_hall", name: "Town hall", formality: 50, accessibility: 60, participation: 80, moderator: 30, radius: 85, type: "single"},
+          {id: "talk_show", name: "Talk show", formality: 70, accessibility: 40, participation: 30, moderator: 80, radius: 91, type: "single"},
+          {id: "protest", name: "Protest publiczny", formality: 20, accessibility: 90, participation: 90, moderator: 10, radius: 97, type: "single"},
+          {id: "press_conference", name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, moderator: 20, radius: 86, type: "single"},
+          {id: "interview", name: "Wywiad", formality: 80, accessibility: 10, participation: 10, moderator: 90, radius: 92, type: "single"},
+          {id: "social_media", name: "Social media / blog", formality: 10, accessibility: 100, participation: 100, moderator: 0, radius: 96, type: "single"},
+        ]
+
+        const descriptions = {
+          "interview": {
             name: "Wywiad",
-            formality: 80,
-            accessibility: 10,
-            participation: 10,
-            type: 'single',
-            radius: 100,
+            media: ["bi-tv", "bi-newspaper", "bi-broadcast", "bi-globe"],
             description: "Wywiad polityczny to rodzaj rozmowy, która ma na celu uzyskanie informacji, opinii lub komentarzy od polityków lub innych osób związanych z życiem politycznym na temat określonych kwestii politycznych, społecznych lub gospodarczych. Jest to istotne narzędzie dziennikarskie, które pozwala na przybliżenie opinii publicznej stanowisk polityków oraz na lepsze zrozumienie działań podejmowanych w życiu politycznym.",
             bullets: [
               {bullet: "Tematyka", text: "Wywiady polityczne mogą dotyczyć różnorodnych tematów związanych z życiem politycznym, takich jak aktualne wydarzenia, projekty ustaw, decyzje rządowe, sprawy międzynarodowe, polityka społeczna, gospodarcza czy kwestie dotyczące bezpieczeństwa narodowego."},
@@ -62,22 +80,23 @@
             ],
             youtubes: ["https://www.youtube.com/watch?v=rmgtOX1Gkfs", "https://www.youtube.com/watch?v=QmGBaEWk_9k"],
           },
-        ];
+        }
 
         // svg setup
         const width = $("#chart").width();
-        const height = 600;
+        const height = $("#chart").height();
         const margin = 40;
+        const margin_top = 10;
         const svg = d3.select('#chart').append('svg')
           .attr('width', width)
           .attr('height', height);
 
         // axes
         const borderLines = [
-          {x1: margin, y1: margin, x2: width - margin, y2: margin},
-          {x1: width - margin, y1: margin, x2: width - margin, y2: height - margin},
+          {x1: margin, y1: margin_top, x2: width - margin, y2: margin_top},
+          {x1: width - margin, y1: margin_top, x2: width - margin, y2: height - margin},
           {x1: margin, y1: height - margin, x2: width - margin, y2: height - margin},
-          {x1: margin, y1: margin, x2: margin, y2: height - margin}
+          {x1: margin, y1: margin_top, x2: margin, y2: height - margin}
         ];
 
         borderLines.forEach(line => {
@@ -91,42 +110,45 @@
         });
 
         svg.append('text')
+          .attr("class", "x-axis main-label")
           .attr('x', width / 2)
           .attr('y', height - margin + 20)
           .attr('text-anchor', 'middle')
-          .text('Stopień formalności')
+          .text('Dostępność publiczna')
           .style('font-size', '16px');
         svg.append('text')
+          .attr("class", "x-axis bottom-label")
           .attr('x', 40)
           .attr('y', height - margin + 20)
           .attr('text-anchor', 'start')
-          .text('Niski')
-          .style('font-size', '12px');
-        svg.append('text')
-          .attr('x', width - margin)
-          .attr('y', height - margin + 20)
-          .attr('text-anchor', 'end')
-          .text('Wysoki')
-          .style('font-size', '12px');
-
-        svg.append('text')
-          .attr('transform', `translate(30, ${height / 2}) rotate(-90)`)
-          .attr('text-anchor', 'middle')
-          .text('Dostępność publiczna')
-          .style('font-size', '16px');
-
-        svg.append('text')
-          .attr('transform', `translate(30, ${height - margin}) rotate(-90)`)
-          .attr('text-anchor', 'start')
           .text('Niska')
           .style('font-size', '12px');
-
         svg.append('text')
-          .attr('transform', `translate(30, ${margin}) rotate(-90)`)
+          .attr("class", "x-axis top-label")
+          .attr('x', width - margin)
+          .attr('y', height - margin + 20)
           .attr('text-anchor', 'end')
           .text('Wysoka')
           .style('font-size', '12px');
 
+        svg.append('text')
+          .attr("class", "y-axis main-label")
+          .attr('transform', `translate(30, ${height / 2}) rotate(-90)`)
+          .attr('text-anchor', 'middle')
+          .text('Partycypacja publiczności')
+          .style('font-size', '16px');
+        svg.append('text')
+          .attr("class", "y-axis bottom-label")
+          .attr('transform', `translate(30, ${height - margin}) rotate(-90)`)
+          .attr('text-anchor', 'start')
+          .text('Niska')
+          .style('font-size', '12px');
+        svg.append('text')
+          .attr("class", "y-axis top-label")
+          .attr('transform', `translate(30, ${margin_top}) rotate(-90)`)
+          .attr('text-anchor', 'end')
+          .text('Wysoka')
+          .style('font-size', '12px');
 
         // scales
         const xScale = d3.scaleLinear()
@@ -136,14 +158,14 @@
           .domain([-50, 150])
           .range([height - 50, 50]);
 
-        const uniqueNames = Array.from(new Set(data.map(d => d.name).concat(data.flatMap(d => d.children ? d.children.map(child => child.name) : []))));
+        const uniqueNames = Array.from(new Set(data.map(d => d.name)));
         const nameToIndex = new Map(uniqueNames.map((name, index) => [name, index / (uniqueNames.length - 1)]));
         const color = d3.scaleSequential(d3.interpolateWarm) // Example with a cool color interpolator
           .domain([0, 1]);
 
         // simulation
         const simulation = d3.forceSimulation(data)
-          .force('x', d3.forceX(d => xScale(d.formality)).strength(0.2))
+          .force('x', d3.forceX(d => xScale(d.accessibility)).strength(0.2))
           .force('y', d3.forceY(d => yScale(d.participation)).strength(0.2))
           .force('collide', d3.forceCollide(d => d.radius + 2))
           .on('tick', ticked);
@@ -156,29 +178,15 @@
             const entered = u.enter().append('g')
                 .attr('class', 'node');
 
-            entered.filter(d => d.type === 'single').append('circle')
+            entered.append('circle')
+                .attr("id", d => d.id)
                 .attr('class', 'bubble')
                 .attr('r', d => d.radius)
                 .attr('fill', d => color(nameToIndex.get(d.name)))
                 .attr('stroke', 'grey')
                 .attr('stroke-width', 1);
 
-            entered.filter(d => d.type === 'parent').append('circle')
-                .attr('class', 'bubble')
-                .attr('r', d => d.radius)
-                .attr('fill', 'none')
-                .attr('stroke', 'grey')
-                .attr('stroke-dasharray', '5,5')
-                .attr('stroke-width', 1);
-
-            entered.filter(d => d.type === 'single').append('text')
-                .attr('text-anchor', 'middle')
-                .attr('dy', "0.35em")
-                .text(d => d.name)
-                .style('fill', '#333');
-
-            entered.filter(d => d.type === 'parent').append('text')
-                .attr('y', d => -d.radius - 10)
+            entered.append('text')
                 .attr('text-anchor', 'middle')
                 .attr('dy', "0.35em")
                 .text(d => d.name)
@@ -186,69 +194,71 @@
 
             u.merge(entered)
                 .attr('transform', d => `translate(${d.x}, ${d.y})`);
-
-            // packed nodes
-            entered.filter(d => d.type === 'parent').each(function(d) {
-                const node = d3.select(this);
-                const packedData = pack(d);
-
-                const packedCircles = node.selectAll('.packed')
-                    .data(packedData.leaves())
-                    .enter()
-                    .append('circle')
-                    .classed('packed', true)
-                    .attr('r', d => d.r)
-                    .attr('fill', d => color(nameToIndex.get(d.data.name)))
-                    .attr('stroke', 'grey')
-                    .attr('stroke-width', 0.5);
-
-                const packedLabels = node.selectAll('text.packed')
-                  .data(packedData.leaves())
-                  .enter()
-                  .append('text')
-                    .attr('class', 'packed')
-                    .attr('x', d => d.x - packedData.r)
-                    .attr('y', d => d.y - packedData.r)
-                    .attr('text-anchor', 'middle')
-                    .attr('dy', "0.35em")
-                    .text(d => d.data.name)
-                    .style('fill', '#333')
-                    .style('font-size', '10px');
-
-                node.selectAll('.packed')
-                    .attr('cx', d => d.x - packedData.r)
-                    .attr('cy', d => d.y - packedData.r);
-            });
-        }
-
-        function pack(parentData) {
-          const hierarchy = d3.hierarchy({children: parentData.children}).sum(d => d.radius);
-          return d3.pack()
-          .size([parentData.radius * 2, parentData.radius * 2])
-            .padding(2)(hierarchy);
         }
 
         // start simulation
         simulation.alpha(1).restart();
 
+        // update simulation
+        function updateSimulation() {
+            var axesValues = $('#axesValues').val();
+            let xAxisAttribute = axesValues.split("_")[2];
+            let yAxisAttribute = axesValues.split("_")[0];
 
+            var labels = ["main", "top", "bottom"];
+            const axesDict = {
+              formality: {main: "Stopień formalności", bottom: "Niski", top: "Wysoki"},
+              accessibility: {main: "Dostępność publiczna", bottom: "Niska", top: "Wysoka"},
+              participation: {main: "Partycypacja publiczności", bottom: "Niska", top: "Wysoka"},
+              moderator: {main: "Rola moderatora", bottom: "Brak", top: "Krytyczna"},
+            }
+
+            d3.select('#chart svg').selectAll(".y-axis, .x-axis")
+              .transition().duration(250)
+              .style("opacity", 0)
+            labels.forEach(label => {
+              d3.select('#chart svg').selectAll(`.x-axis.${label}-label`)
+                .transition().duration(250).delay(250).text(axesDict[xAxisAttribute][label]).style("opacity", 1)
+              d3.select('#chart svg').selectAll(`.y-axis.${label}-label`)
+                .transition().duration(250).delay(250).text(axesDict[yAxisAttribute][label]).style("opacity", 1)
+            })
+
+            simulation
+                .force('x', d3.forceX(d => xScale(d[xAxisAttribute])).strength(0.2))
+                .force('y', d3.forceY(d => yScale(d[yAxisAttribute])).strength(0.2))
+                .alpha(1)
+                .restart();
+        }
+
+
+        // on select change
+        $('#axesValues').change(function() {
+            updateSimulation();
+        });
+
+        // on bubble click
         $('#chart').on('click', '.bubble', function() {
-            // Assuming the data is bound to each bubble, like d3 does
             var data = d3.select(this).data()[0];
+            var id = data.id;
 
-            // Update the title and description in the menu
-            $('#menu-title').text(data.name);
-            $('#menu-description').text(data.description);
+            $('#menu-title').text(descriptions[id].name);
 
-            // Update the bullets list
-            $('#menu-bullets').empty(); // Clear existing bullets
-            data.bullets.forEach(function(bullet) {
-                $('#menu-bullets').append($('<li>').text(bullet.bullet + ": " + bullet.text));
+            $('#menu-icons').empty();
+            descriptions[id].media.forEach(function(iconClass) {
+                $('#menu-icons').append(`<span class="px-2 text-primary"><i class="bi ${iconClass}"></i></span>`);
             });
 
-            // Handle the YouTube videos
-            $('#video-placeholder').empty(); // Clear existing videos
-            data.youtubes.forEach(function(url) {
+            $('#menu-description').text(descriptions[id].description);
+
+            $('#menu-bullets').empty();
+            descriptions[id].bullets.forEach(function(bullet) {
+                //$('#menu-bullets').append($(`<a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-${bullet.bullet}" role="button" aria-expanded="false" aria-controls="collapse-${bullet.bullet}">`).text(bullet.bullet));
+                $('#menu-description-rows').append($(`<div class="row pb-1" id="row-${bullet.bullet}">`));
+                $(`#row-${bullet.bullet}`).append($(`<div class="col-2">`).html(`<button class='btn w-100 rounded border bg-primary text-white'>${bullet.bullet}</button>`));
+            });
+
+            $('#video-placeholder').empty();
+            descriptions[id].youtubes.forEach(function(url) {
                 var videoId = url.split('v=')[1];
                 var embedUrl = "https://www.youtube.com/embed/" + videoId;
                 var iframe = $('<iframe>').attr({
@@ -261,25 +271,11 @@
                 });
                 $('#video-placeholder').append(iframe);
             });
-
-            // Now open the menu
             $('#infoMenu').css('right', '0');
         });
 
-        /*
-        // Close the menu
         $('#infoMenu .close').on('click', function() {
-            $('#infoMenu').css('right', '-50%');
-        });
-
-
-        $('#chart').on('click', '.node', function() {
-            $('#infoMenu').css('right', '0');
-        });
-        */
-
-        $('#infoMenu .close').on('click', function() {
-            $('#infoMenu').css('right', '-50%');
+            $('#infoMenu').css('right', '-100%');
         });
 
 
