@@ -3,9 +3,9 @@ $(document).ready(function() {
   const data = [
     {id: "debate", name: "Debata", formality: 100, accessibility: 30, participation: 40, moderator: 100, radius: 97, type: "single"},
     {id: "panel", name: "Panel dyskusyjny", formality: 60, accessibility: 50, participation: 50, moderator: 50, radius: 87, type: "single"},
-    {id: "town_hall", name: "Town hall", formality: 50, accessibility: 60, participation: 80, moderator: 30, radius: 85, type: "single"},
+    {id: "town_hall", name: "Town hall / wiec", formality: 50, accessibility: 60, participation: 80, moderator: 30, radius: 85, type: "single"},
     {id: "talk_show", name: "Talk show", formality: 70, accessibility: 40, participation: 30, moderator: 80, radius: 91, type: "single"},
-    {id: "protest", name: "Protest publiczny", formality: 20, accessibility: 90, participation: 90, moderator: 10, radius: 97, type: "single"},
+    {id: "protest", name: "Demonstracja", formality: 20, accessibility: 90, participation: 90, moderator: 10, radius: 97, type: "single"},
     {id: "press_conference", name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, moderator: 20, radius: 86, type: "single"},
     {id: "interview", name: "Wywiad", formality: 80, accessibility: 10, participation: 10, moderator: 90, radius: 92, type: "single"},
     {id: "social_media", name: "Social media / blog / vlog", formality: 10, accessibility: 100, participation: 100, moderator: 0, radius: 96, type: "single"},
@@ -68,8 +68,8 @@ $(document).ready(function() {
       youtubes: ["https://www.youtube.com/watch?v=-VRMV-_ql-0", "https://www.youtube.com/watch?v=zDfQ4ur--PQ", "https://www.youtube.com/watch?v=eag77II9gZw"],
     },
     "town_hall": {
-      name: "Town hall",
-      media: ["bi-person-arms-up", "bi-tv", "bi-globe"],
+      name: "Town hall / wiec",
+      media: ["bi-people-fill", "bi-tv", "bi-globe"],
       description: 'Spotkanie typu "town hall" to forma bezpośredniego dialogu między wyborcami a politykami, która umożliwia mieszkańcom określonego obszaru bezpośrednią interakcję z ich przedstawicielami oraz dyskusję na temat kwestii ważnych dla lokalnej społeczności.',
       bullets: [
         {bullet: "Otwartość", text: "Spotkania town hall są zazwyczaj otwarte dla wszystkich mieszkańców danego obszaru, którzy chcą wziąć udział. Mogą to być spotkania publiczne w salach konferencyjnych, szkołach, czy innych miejscach dostępnych dla społeczności."},
@@ -94,7 +94,7 @@ $(document).ready(function() {
     },
     "protest": {
       name: "Demonstracja / protest publiczny",
-      media: ["bi-person-arms-up", "bi-tv", "bi-broadcast", "bi-globe"],
+      media: ["bi-people-fill", "bi-tv", "bi-broadcast", "bi-globe"],
       description: 'Protesty publiczne są formą wyrażania niezadowolenia, sprzeciwu lub żądania zmian wobec określonych kwestii społecznych, politycznych, ekonomicznych lub kulturowych. Mogą one przybierać różne formy, od pokojowych demonstracji i marszów po strajki, sit-ins (forma protestu pokojowego), bojkoty, akcje obywatelskie, petycje i inne działania zbiorowe.',
       bullets: [
         {bullet: "Uczestnicy", text: "Protesty publiczne zazwyczaj gromadzą dużą liczbę osób, które wspólnie wyrażają swoje przekonania i żądania. Mogą to być obywatele, aktywiści społeczni, organizacje pozarządowe, związki zawodowe, grupy mniejszościowe czy studenci."},
@@ -198,7 +198,7 @@ $(document).ready(function() {
 
   const uniqueNames = Array.from(new Set(data.map(d => d.name)));
   const nameToIndex = new Map(uniqueNames.map((name, index) => [name, index / (uniqueNames.length - 1)]));
-  const color = d3.scaleSequential(d3.interpolateWarm) // Example with a cool color interpolator
+  const color = d3.scaleSequential(d3.interpolateWarm)
     .domain([0, 1]);
 
   // simulation
