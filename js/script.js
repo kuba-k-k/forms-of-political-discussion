@@ -9,6 +9,7 @@ $(document).ready(function() {
     {id: "press_conference", name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, moderator: 20, radius: 86, type: "single"},
     {id: "interview", name: "Wywiad", formality: 80, accessibility: 10, participation: 10, moderator: 90, radius: 92, type: "single"},
     {id: "social_media", name: "Social media / blog / vlog", formality: 10, accessibility: 100, participation: 100, moderator: 0, radius: 96, type: "single"},
+    {id: "speech", name: "Przemówienie", formality: 80, accessibility: 70, participation: 25, moderator: 0, radius: 94, type: "single"},
   ]
 
   const descriptions = {
@@ -117,6 +118,18 @@ $(document).ready(function() {
         {bullet: "Monitorowanie opinii publicznej", text: "Ta forma umożliwia łatwiejszy pomiar i monitorowanie nastrojów społecznych niż inne wymienione tu formy. Partie polityczne, kandydaci i rządy często analizują dane z platform, aby kształtować dalszą komunikację."},
       ],
       youtubes: ["https://www.youtube.com/shorts/UNR5qLmeKu8", "https://www.youtube.com/shorts/UKtohjwlL4g", "https://www.youtube.com/shorts/pCZNz1h7ixM"],
+    },
+    "speech": {
+      name: "Przemówienie",
+      media: ["bi-people-fill", "bi-tv", "bi-broadcast", "bi-globe"],
+      description: "Przemówienie polityczne to formalna wypowiedź polityka lub osoby publicznej bezpośrednio do odbiorców. Przemówienia często dotyczą kontrowersyjnych lub kwestionowanych decyzji dotyczących możliwych kierunków działania.",
+      bullets: [
+        {bullet: "Tematyka", text: "Może obejmować konkretne propozycje polityczne, takie jak reforma opieki zdrowotnej lub polityka imigracyjna, a także szersze tematy, takie jak jedność narodowa, plany gospodarcze lub reakcje na kryzysy. Temat jest wybierany tak, aby odpowiadał na obawami słuchaczy i spełniał strategiczne cele mówcy."},
+        {bullet: "Odbiorcy", text: "Wyborcy, zwolennicy partii, członkowie organu ustawodawczego lub ogół społeczeństwa. Charakter odbiorców często kształtuje treść, ton i styl przemówienia, jako że mówcy dostosowują swoje komunikaty do zainteresowań, wartości i oczekiwań odbiorców."},
+        {bullet: "Forma", text: "Może znacznie się różnić w zależności od kontekstu i celu. Typowe formy obejmują przemówienia programowe na wiecach lub konwencjach politycznych, przemówienia wygłaszane w sali Sejmu lub Senatu, telewizyjne przemówienia do narodu lub zaimprowizowane przemówienia na zgromadzeniach publicznych."},
+        {bullet: "Cel", text: "Przekazanie informacji, agitacja, zdobycie poparcia, lub wywarcie wpływu na opinię publiczną wobec wybranego tematu politycznego."},
+      ],
+      youtubes: ["https://www.youtube.com/watch?v=vP4iY1TtS3s", "https://www.youtube.com/watch?v=MNYt_FFxePk", "https://www.youtube.com/watch?v=RayToE35mDM", ],
     },
   }
 
