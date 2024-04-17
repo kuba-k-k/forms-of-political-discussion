@@ -1,15 +1,15 @@
 $(document).ready(function() {
   // data
   const data = [
-    {id: "debate", name: "Debata", formality: 100, accessibility: 30, participation: 40, moderator: 100, radius: 97, type: "single"},
-    {id: "panel", name: "Panel dyskusyjny", formality: 60, accessibility: 50, participation: 50, moderator: 50, radius: 87, type: "single"},
-    {id: "town_hall", name: "Town hall / wiec", formality: 50, accessibility: 60, participation: 80, moderator: 30, radius: 85, type: "single"},
-    {id: "talk_show", name: "Talk show", formality: 70, accessibility: 40, participation: 30, moderator: 80, radius: 91, type: "single"},
-    {id: "protest", name: "Demonstracja", formality: 20, accessibility: 90, participation: 90, moderator: 10, radius: 97, type: "single"},
-    {id: "press_conference", name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, moderator: 20, radius: 86, type: "single"},
-    {id: "interview", name: "Wywiad", formality: 80, accessibility: 10, participation: 10, moderator: 90, radius: 92, type: "single"},
-    {id: "social_media", name: "Social media / blog / vlog", formality: 10, accessibility: 100, participation: 100, moderator: 0, radius: 96, type: "single"},
-    {id: "speech", name: "Przemówienie", formality: 80, accessibility: 70, participation: 25, moderator: 0, radius: 94, type: "single"},
+    {id: "debate", name: "Debata", formality: 100, accessibility: 30, participation: 40, moderator: 100, radius: 77, type: "single"},
+    {id: "panel", name: "Panel dyskusyjny", formality: 60, accessibility: 50, participation: 50, moderator: 50, radius: 70, type: "single"},
+    {id: "town_hall", name: "Town hall / wiec", formality: 50, accessibility: 60, participation: 80, moderator: 30, radius: 71, type: "single"},
+    {id: "talk_show", name: "Talk show", formality: 70, accessibility: 40, participation: 30, moderator: 80, radius: 71, type: "single"},
+    {id: "protest", name: "Demonstracja", formality: 20, accessibility: 90, participation: 90, moderator: 10, radius: 77, type: "single"},
+    {id: "press_conference", name: "Konferencja prasowa", formality: 90, accessibility: 30, participation: 20, moderator: 20, radius: 79, type: "single"},
+    {id: "interview", name: "Wywiad", formality: 80, accessibility: 10, participation: 10, moderator: 90, radius: 72, type: "single"},
+    {id: "social_media", name: "Social media / blog / vlog", formality: 10, accessibility: 100, participation: 100, moderator: 0, radius: 76, type: "single"},
+    {id: "speech", name: "Przemówienie", formality: 80, accessibility: 70, participation: 25, moderator: 0, radius: 74, type: "single"},
   ]
 
   const descriptions = {
